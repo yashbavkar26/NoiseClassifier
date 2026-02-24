@@ -9,7 +9,6 @@ venv/
 .env
 
 # ✅ Model + training outputs (optional)
-*.h5
 *.keras
 *.ckpt
 *.pb
