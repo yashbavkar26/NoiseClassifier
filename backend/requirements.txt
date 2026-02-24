@@ -7,3 +7,6 @@ matplotlib
 fastapi
 uvicorn
 python-multipart
+python-dotenv
+requests
+gunicorn

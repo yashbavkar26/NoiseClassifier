@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from dotenv import load_dotenv
 import numpy as np
 import librosa
 import tensorflow as tf
@@ -10,11 +11,12 @@ import requests
 from email.message import EmailMessage
 import os
 
+load_dotenv()
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[os.getenv("ALLOWED_ORIGINS", "*").split(",")],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -23,7 +25,7 @@ app.add_middleware(
 # =========================
 # 🔐 API KEY
 # =========================
-API_KEY = "your_secure_api_key_here"
+API_KEY = os.getenv("API_KEY","YASH123456")
 
 # =========================
 # 🎵 Audio Settings
@@ -38,16 +40,13 @@ N_MFCC = 40
 # =========================
 LATEST_LOCATION = {"latitude": "Unknown", "longitude": "Unknown"}
 
-# =========================
-# 📧 Email Configuration
-# =========================
-EMAIL_SENDER = "your_email@example.com"
-EMAIL_PASSWORD = "your_email_password"  # ⚠️ Use environment variable in production
-EMAIL_RECEIVER = "your_receiver_email@example.com"
+#Email Configuration
+EMAIL_SENDER = os.getenv("EMAIL_SENDER", "")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
+EMAIL_RECEIVER = os.getenv("EMAIL_RECEIVER", "")
 
-# =========================
-# 🗺 Reverse Geocoding
-# =========================
+# Reverse Geocoding
+
 def get_location_name(latitude, longitude):
     try:
         url = "https://nominatim.openstreetmap.org/reverse"
