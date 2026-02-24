@@ -17,8 +17,7 @@ COPY api.py .
 COPY noise_classifier_model.h5 .
 COPY .env* ./
 
-# Expose port
-EXPOSE 10000
+
 
 # Run with gunicorn for production
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "10000"]
+CMD uvicorn api:app --host 0.0.0.0 --port $PORT
