@@ -17,7 +17,9 @@ COPY api.py .
 COPY noise_classifier_model.h5 .
 COPY .env* ./
 
+# Default port for Render
+ENV PORT=10000
+EXPOSE 10000
 
-
-# Run with gunicorn for production
+# Run with uvicorn for production
 CMD uvicorn api:app --host 0.0.0.0 --port $PORT

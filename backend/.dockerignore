@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+*.npy
+UrbanSound8K/
+temp_audio.wav
+check_gpu.py
+extract_features.py
+train_model.py
+.git/
