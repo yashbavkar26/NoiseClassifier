@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, UploadFile, File, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -9,7 +10,6 @@ import smtplib
 import ssl
 import requests
 from email.message import EmailMessage
-import os
 
 load_dotenv()
 app = FastAPI()
@@ -121,8 +121,20 @@ Please take necessary action.
         print(f"❌ Failed to send email: {e}")
 
 # =========================
-# 🧠 Load Model
+# 🧠 Load Model (with Keras 3 compatibility fix)
 # =========================
+# Monkey-patch Dense.from_config to strip 'quantization_config' which was
+# added in newer Keras 3.x but causes errors during .h5 deserialization
+_OriginalDense = tf.keras.layers.Dense
+_original_from_config = _OriginalDense.from_config.__func__
+
+@classmethod
+def _patched_from_config(cls, config):
+    config.pop("quantization_config", None)
+    return _original_from_config(cls, config)
+
+_OriginalDense.from_config = _patched_from_config
+
 model = tf.keras.models.load_model("noise_classifier_model.h5")
 
 CLASS_LABELS = {
